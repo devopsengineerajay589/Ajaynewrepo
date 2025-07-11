@@ -1,7 +1,13 @@
+# module "azurerm_resource_group" {
+#   source                  = "../Modules/azurerm_resource_group"
+#   resource_group_name     = "todo_app_rg"
+#   resource_group_location = "West US"
+# }
+
 module "azurerm_resource_group" {
   source                  = "../Modules/azurerm_resource_group"
-  resource_group_name     = "todo_app_rg"
-  resource_group_location = "West US"
+  resource_group_name     = "todo_app_rg1"
+  resource_group_location = "East US"
 }
 
 module "azurerm_virtual_network" {
@@ -58,16 +64,16 @@ module "frontend_vm" {
   resource_group_name    = "todo_app_rg"
   ip_name                = "frontend_ip"
   virtual_machine_name   = "todoFrontendVM"
-  subnet_name          = "frontend-subnet"
-  virtual_network_name = "todoapp_vnet"
-  public_ip_name       = "frontend_pip"
-secret_username_name = "vm-username"
-    secret_password_name = "vm-password"
-  image_publisher = "Canonical"
-  image_offer     = "ubuntu-24_04-lts"
-  image_sku       = "ubuntu-pro-gen1"
-  image_version   = "latest"
-  key_vault_name  = "todoappKV"
+  subnet_name            = "frontend-subnet"
+  virtual_network_name   = "todoapp_vnet"
+  public_ip_name         = "frontend_pip"
+  secret_username_name   = "vm-username"
+  secret_password_name   = "vm-password"
+  image_publisher        = "Canonical"
+  image_offer            = "ubuntu-24_04-lts"
+  image_sku              = "ubuntu-pro-gen1"
+  image_version          = "latest"
+  key_vault_name         = "todoappKV"
 }
 
 
@@ -83,25 +89,25 @@ module "backend_vm" {
   subnet_name            = "backend-subnet"
   virtual_network_name   = "todoapp_vnet"
   public_ip_name         = "backend_pip"
-    secret_username_name = "vm-username"
-    secret_password_name = "vm-password"
-  image_publisher = "Canonical"
-  image_offer     = "0001-com-ubuntu-server-focal"
-  image_sku       = "20_04-lts"
-  image_version   = "latest"
-  key_vault_name  = "todoappKV"
+  secret_username_name   = "vm-username"
+  secret_password_name   = "vm-password"
+  image_publisher        = "Canonical"
+  image_offer            = "0001-com-ubuntu-server-focal"
+  image_sku              = "20_04-lts"
+  image_version          = "latest"
+  key_vault_name         = "todoappKV"
 }
 
 module "sql_server" {
-  depends_on          = [module.azurerm_resource_group, module.key_vault, module.vm_username_secret, module.vm_password_secret]
-  source              = "../Modules/azurerm_sql_server"
-  sql_server_name     = "todosqlserver111"
-  location            = "West US"
-  resource_group_name = "todo_app_rg"
-  key_vault_name      = "todoappKV"
-    secret_username_name = "vm-username"
-    secret_password_name = "vm-password"
- }
+  depends_on           = [module.azurerm_resource_group, module.key_vault, module.vm_username_secret, module.vm_password_secret]
+  source               = "../Modules/azurerm_sql_server"
+  sql_server_name      = "todosqlserver111"
+  location             = "West US"
+  resource_group_name  = "todo_app_rg"
+  key_vault_name       = "todoappKV"
+  secret_username_name = "vm-username"
+  secret_password_name = "vm-password"
+}
 
 module "sql_database" {
   depends_on          = [module.sql_server]
